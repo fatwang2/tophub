@@ -1,7 +1,7 @@
 本项目为ChatGPT-ON-Wechat插件，支持今日热榜新闻抓取推送，效果如下：
 ![Alt text](image.png)
 
-1. API来源于https://alapi.cn/api/view/50，需自行注册申请token，免费
+1. API来源于https://alapi.cn/api/view/50。需自行注册申请token，免费
 2. 为方便配置，直接取的是根目录下的变量，需在config.py和config.json中新增两个变量，用来输入不同类型新闻与token 
     "tophub_token":"",
     "tophub_type":"",
