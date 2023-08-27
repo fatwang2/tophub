@@ -11,7 +11,7 @@ from config import conf  # 导入配置文件
     desire_priority=1,  # 插件的优先级
     hidden=False,  # 插件是否隐藏
     desc="A plugin for tophub",  # 插件的描述
-    version="0.1",  # 插件的版本号
+    version="0.0.1",  # 插件的版本号
     author="fatwang2",  # 插件的作者
 )
 class Tophub(Plugin):
