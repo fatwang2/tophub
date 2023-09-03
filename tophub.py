@@ -26,7 +26,7 @@ class Tophub(Plugin):
             token = conf().get("tophub_token")  # 从配置文件中获取 tophub_token
             type = conf().get("tophub_type") # 从配置文件中获取 tophub_type
             url = "https://v2.alapi.cn/api/tophub/get"  # API 的 URL
-            payload = f"token={token}&type={type}&format=json"  # 构建请求的参数
+            payload = f"token={token}&type={type}&id=mproPpoq6O&format=json"  # 构建请求的参数
             headers = {'Content-Type': "application/x-www-form-urlencoded"}  # 请求头
 
             try:
