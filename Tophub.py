@@ -30,7 +30,7 @@ class Tophub(Plugin):
             headers ={"Content-Type": "application/x-www-form-urlencoded"}# 请求头
 
             try:
-                resp = requests.get(url,params,headers=headers)# 发送 get 请求
+                resp = requests.get(url,params=params,headers=headers)# 发送 get 请求
             except requests.exceptions.RequestException as e:
                 print(f"An error occurred when making the request: {e}")  # 请求出错时打印错误消息
                 return
