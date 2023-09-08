@@ -11,7 +11,7 @@ from config import conf  # 导入配置文件
     desire_priority=1,  # 插件的优先级
     hidden=False,  # 插件是否隐藏
     desc="A plugin for tophub",  # 插件的描述
-    version="0.0.1",  # 插件的版本号
+    version="0.0.2",  # 插件的版本号
     author="fatwang2",  # 插件的作者
 )
 class Tophub(Plugin):
@@ -25,36 +25,34 @@ class Tophub(Plugin):
         if content == "热榜":  # 如果消息内容为 "热榜"
             token = conf().get("tophub_token")  # 从配置文件中获取 tophub_token
             type = conf().get("tophub_type") # 从配置文件中获取 tophub_type
-            url = "https://v2.alapi.cn/api/tophub/get"  # API 的 URL
-            payload = f"token={token}&type={type}&id=mproPpoq6O&format=json"  # 构建请求的参数
-            headers = {'Content-Type': "application/x-www-form-urlencoded"}  # 请求头
+            url = "http://v.juhe.cn/toutiao/index"  # API 的 URL
+            params = {"key": token, "type": type}
+            headers ={"Content-Type": "application/x-www-form-urlencoded"}# 请求头
 
             try:
-                response = requests.request("POST", url, data=payload, headers=headers)  # 发送 POST 请求
-                response.raise_for_status()  # 如果状态码不是 200，抛出异常
+                resp = requests.get(url,params,headers=headers)# 发送 get 请求
             except requests.exceptions.RequestException as e:
                 print(f"An error occurred when making the request: {e}")  # 请求出错时打印错误消息
                 return
 
-            data = json.loads(response.text)  # 解析返回的 JSON 数据
+            data = json.loads(resp.text)  # 解析返回的 JSON 数据
             news_data = data.get('data')  # 获取新闻数据
             if news_data:
-                date = news_data.get('last_update')  # 获取更新时间
-                news_list = news_data.get('list')  # 获取热榜列表
-                name = news_data.get('name')  # 获取热榜名称
+                news_list = news_data.get('data')  # 获取热榜列表
 
                 reply = Reply()  # 创建回复消息对象
                 reply.type = ReplyType.TEXT  # 设置回复消息的类型为文本
-                reply.content = f"🔥🔥🔥{name}\n更新时间: {date}\n\n"  # 设置回复消息的内容
+                reply.content = f"🔥🔥🔥新闻热榜"  # 设置回复消息的内容
 
                 for i, news_item in enumerate(news_list, 1):
                     title = news_item.get('title', '未知标题') # 获取新闻标题
-                    link = news_item.get('link', '未知链接') # 获取新闻链接
+                    link = news_item.get('url', '未知链接') # 获取新闻链接
+                    date = news_item.get('date', '未知日期') # 获取新闻时间
                     # 删除任何前置的数字和特殊字符（如果有）
                     title = re.sub(r'^\d+[、.]\s*', '', title)
 
                     # 添加到回复内容中
-                    reply.content += f"{i}. {title}\n{link}\n\n"
+                    reply.content += f"{i}. {title}\n{date}\n{url}\n\n"
 
                 e_context["reply"] = reply
                 e_context.action = EventAction.BREAK_PASS
