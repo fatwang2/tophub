@@ -25,14 +25,22 @@ class Tophub(Plugin):
         if content == "热榜":  # 如果消息内容为 "热榜"
             token = conf().get("tophub_token")  # 从配置文件中获取 tophub_token
             news_type = conf().get("tophub_type") # 从配置文件中获取 tophub_type
+            if not token or not news_type:
+                print("ERROR: Missing configuration")
+                return
             url = "https://v2.alapi.cn/api/new/toutiao"  # API 的 URL
             payload = f"token={token}&type={news_type}&page=1"
             headers ={"Content-Type": "application/x-www-form-urlencoded"}# 请求头
 
             try:
-                resp = requests.request("POST", url, data=payload, headers=headers)# 发送 get 请求
-                data = json.loads(resp.text)  # 解析返回的 JSON 数据
-                news_data = data.get('data')  # 获取新闻数据
+                response = requests.request("POST", url, data=payload, headers=headers)# 发送 get 请求
+                response.raise_for_status()  # 抛出异常
+            except requests.exceptions.RequestException as e:
+                print(f"An error occurred when making the request: {e}")  # 请求出错时打印错误消息
+                return                
+            data = json.loads(response.text)  # 解析返回的 JSON 数据
+            news_data = data.get('data')  # 获取新闻数据
+                
             if news_data:
                 reply = Reply()  # 创建回复消息对象
                 reply.type = ReplyType.TEXT  # 设置回复消息的类型为文本
