@@ -36,7 +36,7 @@ class Tophub(Plugin):
                 return
 
             data = json.loads(resp.text)  # 解析返回的 JSON 数据
-            news_data = data.get('data')  # 获取新闻数据
+            news_data = data.get('result').get('data')  # 获取新闻数据
             if news_data:
                 news_list = news_data.get('data')  # 获取热榜列表
 
