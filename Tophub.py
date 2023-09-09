@@ -24,9 +24,9 @@ class Tophub(Plugin):
         content = e_context["context"].content  # 获取事件上下文中的消息内容
         if content == "热榜":  # 如果消息内容为 "热榜"
             token = conf().get("tophub_token")  # 从配置文件中获取 tophub_token
-            type = conf().get("tophub_type") # 从配置文件中获取 tophub_type
+            news_type = conf().get("tophub_type") # 从配置文件中获取 tophub_type
             url = "http://v.juhe.cn/toutiao/index"  # API 的 URL
-            params = {"key": token, "type": type}
+            params = {"key": token, "type": news_type}
             headers ={"Content-Type": "application/x-www-form-urlencoded"}# 请求头
 
             try:
@@ -38,13 +38,11 @@ class Tophub(Plugin):
             data = json.loads(resp.text)  # 解析返回的 JSON 数据
             news_data = data.get('result').get('data')  # 获取新闻数据
             if news_data:
-                news_list = news_data.get('data')  # 获取热榜列表
-
                 reply = Reply()  # 创建回复消息对象
                 reply.type = ReplyType.TEXT  # 设置回复消息的类型为文本
                 reply.content = f"🔥🔥🔥新闻热榜"  # 设置回复消息的内容
 
-                for i, news_item in enumerate(news_list, 1):
+                for i, news_item in enumerate(news_data, 1):
                     title = news_item.get('title', '未知标题') # 获取新闻标题
                     link = news_item.get('url', '未知链接') # 获取新闻链接
                     date = news_item.get('date', '未知日期') # 获取新闻时间
@@ -52,7 +50,7 @@ class Tophub(Plugin):
                     title = re.sub(r'^\d+[、.]\s*', '', title)
 
                     # 添加到回复内容中
-                    reply.content += f"{i}. {title}\n{date}\n{url}\n\n"
+                    reply.content += f"{i}. {title}\n{date}\n{link}\n\n"
 
                 e_context["reply"] = reply
                 e_context.action = EventAction.BREAK_PASS
